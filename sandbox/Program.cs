@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -57,53 +58,11 @@ namespace sandbox
             // A7z --> A1z
             if (word.All(Char.IsLetterOrDigit))
             {
+                string innerString = word.Substring(1, word.Length - 2);
+                int listOfCharacters = innerString.ToList().Distinct().Count();
                 return $"{word.Substring(0, 1)}{word.Length - 2}{word.Substring(word.Length - 1, 1)}";
             }
-
-
-
-            /*
-            // G-d --> G-d
-            // -ab --> -1b
-            // ab- --> a1-
-            // a1b --> a1b
-            if (word.Length == 3 && !word.All(Char.IsLetterOrDigit))
-            {
-                // find position of Non-Alphanumeric character
-                Regex regex = new Regex("[^a-zA-Z0-9]");
-                int ctr = 1;
-
-                foreach (char letter in word)
-                {
-                    if (regex.IsMatch(letter.ToString()))
-                    {
-                        result += letter.ToString();
-                    }
-                    else
-                    {
-                        // First character in the word and it is not a Non-Alphanumeric character
-
-                        switch (ctr)
-                        {
-                            case 1:
-                                result += letter.ToString();
-                                break;
-                            case 2:
-                                result += "1";
-                                break;
-                            case 3:
-                                result += letter.ToString();
-                                break;
-                        }
-
-                    }
-
-                    ctr += 1;
-                }
-                return result;
-            }
-
-            */
+           
             // G-d --> G-d
             // -ab --> -1b
             // ab- --> a1-
@@ -150,15 +109,10 @@ namespace sandbox
                     int lastInnerCharacter = word.Length - 1;
                     int wordLength = word.Length;
                     int innerCharacterCount = 0;
+                    List<char> uniqueCharacters = new List<char>();
 
                     foreach (char letter in word)
                     {
-                        //if (regex.IsMatch(letter.ToString()))
-                        //{
-                        //    result += letter.ToString();
-                        //}
-                        //else
-                        //{
 
                         // Get 1st or last character
                         if (ctr == 1 || ctr == wordLength)
@@ -174,8 +128,15 @@ namespace sandbox
                             }
                             else
                             {
-                                innerCharacterCount += 1;
+                                
                                 string lastCharacter = result.Substring(result.Length - 1);
+
+                                // Only continue for unique characters
+                                if (uniqueCharacters.Contains(letter))
+                                    continue;
+
+                                innerCharacterCount += 1;
+                                uniqueCharacters.Add(letter);
 
                                 try
                                 {
@@ -191,9 +152,6 @@ namespace sandbox
                                 
                             }
                         }
-
-
-                        //}
 
                         ctr += 1;
                     }
